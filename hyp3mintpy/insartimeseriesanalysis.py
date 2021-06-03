@@ -40,8 +40,6 @@ def run_job(granule_list_file, outdir):
 
     job_name_prefix ='jz'
 
-    #granule_list_file = "granule.txt"
-
     #read the granulelist file
     with open(granule_list_file) as f:
         lines = f.read().splitlines()
@@ -105,7 +103,7 @@ def config(template_file, data_dir, projectname):
     for line in lines:
         out_lines.append(line.replace('{DATA_DIR}', data_dir))
 
-    outfile = open("{}/{}.txt".format(data_dir, projectname), 'w')
+    outfile = open("{}/{}.cfg".format(data_dir, projectname), 'w')
     outfile.write("".join(out_lines))
     return
 
@@ -140,11 +138,6 @@ def prep_data_struc(data_dir, config_file):
     # clip files
 
     cutfiles(data_dir, ["*.tif"])
-
-    #create custum.cfg
-
-    config(config_file, data_dir)
-
 
     #copy a *.txt in one insar dirctory
 
@@ -183,7 +176,7 @@ def analysis_via_mintpy(data_dir, projectname):
     '''
     os.chdir(data_dir)
     
-    cmd = "smallbaselineApp.py {}/{}.txt".format(data_dir, projectname)
+    cmd = "smallbaselineApp.py {}/{}.cfg".format(data_dir, projectname)
 
     os.system(cmd)
 
@@ -211,9 +204,11 @@ def main():
 
     run_job(filelist, outdir)
 
+    config(template_file, outdir, projectname)
+
     prep_data_struc(outdir, config_file)
 
-    analysis_via_mintpy(outdir)
+    analysis_via_mintpy(outdir, projectname)
 
     return
 

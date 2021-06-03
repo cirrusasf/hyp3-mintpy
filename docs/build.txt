@@ -1,0 +1,56 @@
+#this bash script is used to create the conda hyp3-mintpy environment
+
+# 1. download the hyp3_minty, Mintpy, and PyAPS repos from github.com
+
+export HYP3MINTPY_BASE=/home/jzhu4/projects/work/hyp3
+
+export HYP3MINTPY_HOME=${HYP3MINTPY_BASE}/hyp3-mintpy
+
+export REMOTE_REPO=git@github.com:ASFHyP3/hyp3-mintpy.git
+
+export MintPy_REPO=git@github.com:insarlab/MintPy.git
+
+export PyAPS_REPO=https://github.com/yunjunz/PyAPS.git
+
+cd ${HYP3MINTPY_BASE}
+
+git clone ${REMOTE_REPO}
+
+cd hyp3-mintpy
+
+git clone ${MintPy_REPO}
+
+git clone ${PyAPS_REPO}
+
+
+# 2. create conda env hyp3-mintpy
+
+conda env create -f conda_env_hyp3_mintpy.yml
+
+conda activate hyp3-mintpy
+
+#pip install the local packages in the hyp3-mintpy environment
+
+python -m pip install Mintpy
+
+#install modified Mintpy
+
+python -m pip install -e Mintpy
+
+#install local PyAPS package
+cd PyAPS
+
+python -m pip install ./
+
+#install local hyp3-mintpy package
+
+cd ../
+
+python -m pip install ./
+
+#make jupyter notebook accessible the conda env
+
+conda install -c anaconda ipykernel
+
+python -m ipykernel install --user --name=hyp3-mintpy
+ 	
